@@ -1,0 +1,66 @@
+# ATS Wallet — развёртывание в Coolify / Docker
+# Сервисы: PostgreSQL, Go API (backend), Next.js (frontend)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-wallet}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-walletpass}
+      POSTGRES_DB: ${POSTGRES_DB:-wallet}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-wallet} -d ${POSTGRES_DB:-wallet}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend-go
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: "4000"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USERNAME: ${POSTGRES_USER:-wallet}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-walletpass}
+      DB_DATABASE: ${POSTGRES_DB:-wallet}
+      DB_SSLMODE: "disable"
+      JWT_SECRET: ${JWT_SECRET:-ats-wallet-secret-key}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-ats-admin-secret}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_WEBAPP_URL: ${TELEGRAM_WEBAPP_URL:-}
+      TRONGRID_API_KEY: ${TRONGRID_API_KEY:-}
+      WALLET_PASSWORD: ${WALLET_PASSWORD:-}
+      SUPPORT_BOT_TOKEN: ${SUPPORT_BOT_TOKEN:-}
+      SUPPORT_GROUP_ID: ${SUPPORT_GROUP_ID:--1003782777869}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    expose:
+      - "4000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BACKEND: http://backend:4000
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_BACKEND: http://backend:4000
+      NEXT_PUBLIC_SUPPORT_BOT_USERNAME: ${NEXT_PUBLIC_SUPPORT_BOT_USERNAME:-}
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:

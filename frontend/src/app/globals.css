@@ -1,0 +1,288 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    min-height: 100%;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+  body {
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    @apply bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100;
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+}
+
+.floating-nav-blur {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.dark .floating-nav-blur {
+  background: rgba(15, 23, 42, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.ios-list-item:active {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .ios-list-item:active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.floating-island {
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 12px -4px rgba(0, 0, 0, 0.05);
+}
+
+.dark .floating-island {
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes scanCardIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.scan-card-in {
+  animation: scanCardIn 0.35s ease-out;
+}
+
+@keyframes scan-wait-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.scan-wait-ring {
+  animation: scan-wait-spin 8s linear infinite;
+}
+
+.scan-wait-ring-rev {
+  animation: scan-wait-spin 6s linear infinite reverse;
+}
+
+/* Скелетон загрузки (банковский стиль) */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(148, 163, 184, 0.2) 0%,
+    rgba(148, 163, 184, 0.4) 50%,
+    rgba(148, 163, 184, 0.2) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(71, 85, 105, 0.25) 0%,
+    rgba(71, 85, 105, 0.5) 50%,
+    rgba(71, 85, 105, 0.25) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+/* Полоса загрузки сверху (банковский стиль) */
+@keyframes loading-bar {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Slide up animation for modals */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Плавное появление модалки истории транзакций */
+@keyframes history-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-history-modal {
+  animation: history-modal-in 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Enhanced skeleton shimmer animation */
+@keyframes skeleton-shine {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shine {
+  background-size: 200% 100%;
+  animation: skeleton-shine 1.5s ease-in-out infinite;
+}
+
+/* Fade in animation for loaded content */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+/* Staggered list item animation */
+@keyframes list-item-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-list-item {
+  animation: list-item-in 0.3s ease-out forwards;
+}
+
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 9999;
+  overflow: hidden;
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.loading-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgb(59 130 246 / 0.9), transparent);
+  animation: loading-bar 1.2s ease-in-out infinite;
+}
+
+@keyframes scan-line {
+  0%, 100% {
+    top: 20%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    top: 80%;
+    opacity: 1;
+  }
+  60% {
+    opacity: 0;
+  }
+}
+
+.animate-scan-line {
+  animation: scan-line 2s ease-in-out infinite;
+}
+
+/* ——— Мини-приложение: лёгкие нативные анимации ——— */
+@keyframes miniapp-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes miniapp-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.miniapp-fade-in {
+  animation: miniapp-fade-in 0.35s ease-out forwards;
+}
+
+.miniapp-scale-in {
+  animation: miniapp-scale-in 0.3s ease-out forwards;
+}
+
+/* Появление по очереди (для списков) */
+.miniapp-stagger > * {
+  opacity: 0;
+  animation: miniapp-fade-in 0.35s ease-out forwards;
+}
+
+.miniapp-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.miniapp-stagger > *:nth-child(2) { animation-delay: 40ms; }
+.miniapp-stagger > *:nth-child(3) { animation-delay: 80ms; }
+.miniapp-stagger > *:nth-child(4) { animation-delay: 120ms; }
+.miniapp-stagger > *:nth-child(5) { animation-delay: 160ms; }
+.miniapp-stagger > *:nth-child(6) { animation-delay: 200ms; }
+.miniapp-stagger > *:nth-child(7) { animation-delay: 240ms; }
+.miniapp-stagger > *:nth-child(8) { animation-delay: 280ms; }
+.miniapp-stagger > *:nth-child(9) { animation-delay: 320ms; }
+.miniapp-stagger > *:nth-child(10) { animation-delay: 360ms; }
+.miniapp-stagger > *:nth-child(n+11) { animation-delay: 400ms; }

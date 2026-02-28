@@ -1,0 +1,30 @@
+# Env и секреты
+.env
+.env.local
+*.env
+!.env.example
+!.env.docker.example
+
+# Backend Go
+backend-go/.env
+backend-go/ats-wallet-api
+backend-go/ats-wallet-backend
+backend-go/main
+backend-go/*.log
+backend-go/logs/
+backend-go/client_errors.log
+backend-go/scan*.log
+backend-go/support_bot.log
+
+# Frontend
+frontend/.env
+frontend/.env.local
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Системное
+.DS_Store
+*.log
+.idea/
+.vscode/

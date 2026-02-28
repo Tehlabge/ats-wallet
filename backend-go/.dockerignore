@@ -1,0 +1,11 @@
+.git
+*.log
+logs/
+.env
+.env.*
+!.env.example
+ats-wallet-api
+ats-wallet-backend
+main
+*.md
+.DS_Store
