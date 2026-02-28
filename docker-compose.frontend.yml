@@ -1,0 +1,22 @@
+# ATS Wallet — только Frontend (Next.js)
+# В Coolify: отдельный ресурс. NEXT_PUBLIC_API_BACKEND задайте в Environment (URL бэкенда).
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BACKEND: ${NEXT_PUBLIC_API_BACKEND}
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_BACKEND: ${NEXT_PUBLIC_API_BACKEND}
+      NEXT_PUBLIC_SUPPORT_BOT_USERNAME: ${NEXT_PUBLIC_SUPPORT_BOT_USERNAME:-}
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://127.0.0.1:3000/', r => process.exit(r.statusCode===200?0:1)).on('error', () => process.exit(1))\""]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
