@@ -1,6 +1,43 @@
 # Развёртывание ATS Wallet в Coolify
 
-Проект подготовлен для деплоя в [Coolify](https://coolify.io): все сервисы разнесены по контейнерам (MySQL, Go API, Next.js).
+Проект подготовлен для деплоя в [Coolify](https://coolify.io): все сервисы разнесены по контейнерам (PostgreSQL, Go API, Next.js).
+
+---
+
+## Быстрый старт: погрузить проект в Coolify v4
+
+Coolify разворачивает приложения из **Git-репозитория**. Два варианта.
+
+### Вариант A: Репозиторий уже на GitHub/GitLab
+
+1. Откройте Coolify: **http://ВАШ_IP:8000**
+2. Создайте **Project** (если ещё нет) → **Create New Resource**
+3. **Source**: выберите **Public Repository** (или Deploy Key / GitHub App для приватного репо)
+4. Вставьте **URL репозитория**, например: `https://github.com/username/ats-wallet`
+5. **Build Pack**: в выпадающем списке вместо Nixpacks выберите **Docker Compose**
+6. **Docker Compose Location**: `docker-compose.yml`  
+   **Base Directory**: `/`
+7. Нажмите **Continue**
+8. Выберите **Server** (сервер, где установлен Coolify) → **Continue**
+9. В настройках ресурса откройте **Environment** и добавьте переменные (см. раздел «Переменные окружения» ниже). Можно вставить построчно из `.env.docker.example`, заменив значения на свои.
+10. **Expose в интернет**: в разделе сервисов стека найдите сервис **frontend**, откройте его → **Domains** → добавьте домен или оставьте сгенерированный URL Coolify.
+11. Запустите **Deploy**. Coolify клонирует репо, соберёт образы и поднимет контейнеры.
+
+### Вариант B: Код только на этом сервере (ещё не в Git)
+
+1. Создайте пустой репозиторий на **GitHub** (или GitLab): например `ats-wallet`, без README.
+2. На сервере выполните (подставьте свой URL репо):
+
+```bash
+cd /var/www/html
+git remote add origin https://github.com/ВАШ_ЛОГИН/ats-wallet.git
+git branch -M main
+git push -u origin main
+```
+
+3. Дальше действуйте по **Варианту A** (шаги 1–11), указав URL вашего репозитория.
+
+---
 
 ## Состав контейнеров
 
@@ -14,13 +51,15 @@
 
 ## Вариант 1: Coolify — один стек (Docker Compose)
 
-1. В Coolify создайте **New Resource** → **Docker Compose**.
-2. Подключите репозиторий с проектом или загрузите файлы.
-3. Укажите **Docker Compose Location**: `docker-compose.yml` (в корне).
-4. Добавьте переменные окружения (см. ниже) в разделе **Environment** стека или в файле `.env` в корне (скопируйте из `.env.docker.example`).
-5. Запустите деплой. Coolify соберёт образы и поднимет контейнеры.
+Используйте пошаговую инструкцию в разделе **«Быстрый старт»** выше. Кратко:
 
-Точка входа для пользователей — **frontend** (порт 3000). В настройках домена в Coolify привяжите домен к сервису **frontend**.
+1. **New Resource** → источник **Git** (Public Repository или Deploy Key) → **Build Pack: Docker Compose**.
+2. **Docker Compose Location**: `docker-compose.yml`, **Base Directory**: `/`.
+3. В **Environment** добавьте переменные из `.env.docker.example` (см. ниже).
+4. Для доступа снаружи: в стеке откройте сервис **frontend** → **Domains** → укажите домен или используйте URL Coolify.
+5. Запустите **Deploy**.
+
+Точка входа для пользователей — сервис **frontend** (порт 3000 внутри контейнера). Все запросы к сайту (включая `/api/*`) идут на фронт; Next.js проксирует API на backend.
 
 ## Вариант 2: Coolify — три отдельных приложения
 
