@@ -60,8 +60,9 @@ services:
       NEXT_PUBLIC_SUPPORT_BOT_USERNAME: ${NEXT_PUBLIC_SUPPORT_BOT_USERNAME:-}
     depends_on:
       - backend
-    ports:
-      - "3000:3000"
+    # Порт не публикуем на хост — Coolify проксирует трафик к контейнеру по имени
+    expose:
+      - "3000"
 
 volumes:
   postgres_data:
