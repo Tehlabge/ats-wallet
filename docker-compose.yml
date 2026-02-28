@@ -11,7 +11,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-wallet}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    # Не публикуем 5432 на хост — в Coolify порт уже занят; backend подключается по имени postgres
     expose:
       - "5432"
     healthcheck:
@@ -47,6 +46,12 @@ services:
         condition: service_healthy
     expose:
       - "4000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:4000/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   frontend:
     build:
@@ -60,9 +65,14 @@ services:
       NEXT_PUBLIC_SUPPORT_BOT_USERNAME: ${NEXT_PUBLIC_SUPPORT_BOT_USERNAME:-}
     depends_on:
       - backend
-    # Порт не публикуем на хост — Coolify проксирует трафик к контейнеру по имени
     expose:
       - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://127.0.0.1:3000/', r => process.exit(r.statusCode===200?0:1)).on('error', () => process.exit(1))\""]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
 volumes:
   postgres_data:
